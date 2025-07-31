@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador Tron - Base de Datos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        
+        :root {
+            --neon-blue: #00f6ff;
+            --neon-purple: #ae00ff;
+            --dark-bg: #060608;
+            --grid-line: rgba(0, 100, 255, 0.1);
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--neon-blue);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        header::before, header::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--neon-blue);
+            transform: rotate(45deg);
+        }
+        
+        header::before {
+            left: -10px;
+        }
+        
+        header::after {
+            right: -10px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+            letter-spacing: 3px;
+        }
+        
+        .data-container {
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 15px var(--neon-blue);
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .data-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            animation: scanline 3s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid var(--neon-blue);
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: rgba(0, 100, 255, 0.2);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        tr:hover {
+            background-color: rgba(0, 100, 255, 0.1);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .corner {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--neon-blue);
+        }
+        
+        .corner-tl {
+            top: -1px;
+            left: -1px;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        .corner-tr {
+            top: -1px;
+            right: -1px;
+            border-left: none;
+            border-bottom: none;
+        }
+        
+        .corner-bl {
+            bottom: -1px;
+            left: -1px;
+            border-right: none;
+            border-top: none;
+        }
+        
+        .corner-br {
+            bottom: -1px;
+            right: -1px;
+            border-left: none;
+            border-top: none;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            border-top: 1px solid var(--neon-blue);
+            font-size: 0.8rem;
+        }
+        
+        .error {
+            color: #ff0066;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BASE DE DATOS</h1>
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+        </header>
+        
+        <div class="data-container">
+            <div class="corner corner-tl"></div>
+            <div class="corner corner-tr"></div>
+            <div class="corner corner-bl"></div>
+            <div class="corner corner-br"></div>
+            
+            <div id="data-table">
+                <div class="loading pulse">
+                    CONECTANDO CON EL SERVIDOR DE DATOS...
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        SISTEMA DE VISUALIZACIÓN TRON v2.1 | © 2023
+    </footer>
+    
+    <script>
+        // URL del archivo CSV
+        const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSDm6R8mjI-c1oPdKui9Fb73rUkWPoL6sgQ69AHtHpQ-nmjaHM1HiwtvI3b90Zh7A/pub?gid=735689208&single=true&output=csv';
+        
+        // Función para cargar y procesar el CSV
+        async function loadCSVData() {
+            try {
+                const response = await fetch(csvUrl);
+                if (!response.ok) {
+                    throw new Error('Error al cargar el archivo CSV');
+                }
+                
+                const csvData = await response.text();
+                const data = parseCSV(csvData);
+                
+                // Seleccionar columnas C-H (índices 2-7) y J-L (índices 9-11)
+                const filteredData = data.map(row => {
+                    const colsCH = row.slice(2, 8);  // Columnas C-H (índices 2-7)
+                    const colsJL = row.slice(9, 12); // Columnas J-L (índices 9-11)
+                    return [...colsCH, ...colsJL];
+                });
+                
+                renderTable(filteredData);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('data-table').innerHTML = 
+                    '<div class="error">ERROR: NO SE PUDO CARGAR LOS DATOS<br>' + error.message + '</div>';
+            }
+        }
+        
+        // Función para parsear el CSV
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            return lines.map(line => {
+                // Manejo básico de campos con comas
+                const result = [];
+                let inQuotes = false;
+                let currentField = '';
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(currentField.trim());
+                        currentField = '';
+                    } else {
+                        currentField += char;
+                    }
+                }
+                
+                result.push(currentField.trim());
+                return result;
+            });
+        }
+        
+        // Renderizar la tabla con los datos
+        function renderTable(data) {
+            if (!data || data.length === 0) {
+                document.getElementById('data-table').innerHTML = 
+                    '<div class="error">NO HAY DATOS DISPONIBLES</div>';
+                return;
+            }
+            
+            let html = '<table>';
+            
+            // Encabezados personalizados para las columnas seleccionadas
+            const headers = [
+                'Columna C', 'Columna D', 'Columna E', 
+                'Columna F', 'Columna G', 'Columna H',
+                'Columna J', 'Columna K', 'Columna L'
+            ];
+            
+            // Usar los encabezados del CSV si están disponibles, sino los predeterminados
+            const useHeaders = data[0].length >= headers.length ? data[0] : headers;
+            
+            html += '<thead><tr>';
+            useHeaders.forEach((header, index) => {
+                if (index < 6 || index >= 8) { // Mostrar solo C-H y J-L
+                    html += `<th>${header || headers[index]}</th>`;
+                }
+            });
+            html += '</tr></thead>';
+            
+            // Filas de datos
+            html += '<tbody>';
+            for (let i = 1; i < data.length; i++) {
+                html += '<tr>';
+                data[i].forEach((cell, index) => {
+                    html += `<td>${cell || ''}</td>`;
+                });
+                html += '</tr>';
+            }
+            html += '</tbody></table>';
+            
+            document.getElementById('data-table').innerHTML = html;
+        }
+        
+        // Iniciar la carga cuando la página esté lista
+        document.addEventListener('DOMContentLoaded', loadCSVData);
+    </script>
+</body>
+</html>
