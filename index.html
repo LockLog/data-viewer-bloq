@@ -230,8 +230,8 @@
                 // Seleccionar columnas C-H (índices 2-7) y J-L (índices 9-11)
                 const filteredData = data.map(row => {
                     const colsCH = row.slice(2, 8);  // Columnas C-H (índices 2-7)
-                    const colsJL = row.slice(9, 12); // Columnas J-L (índices 9-11)
-                    return [...colsCH, ...colsJL];
+                    //const colsJL = row.slice(9, 12); // Columnas J-L (índices 9-11)
+                    return [...colsCH];
                 });
                 
                 renderTable(filteredData);
@@ -283,7 +283,7 @@
             const headers = [
                 'Columna C', 'Columna D', 'Columna E', 
                 'Columna F', 'Columna G', 'Columna H',
-                'Columna J', 'Columna K', 'Columna L'
+               // 'Columna J', 'Columna K', 'Columna L'
             ];
             
             // Usar los encabezados del CSV si están disponibles, sino los predeterminados
