@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Datos</title>
+    <title>Mantención de Agendas</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
         
@@ -248,7 +248,7 @@
     </div>
     
     <footer>
-        Sistema de Visualización de Datos &copy; 2023
+        Sistema de Visualización de Datos Gear&copy; 2023
     </footer>
     
     <script>
@@ -273,7 +273,7 @@
                 const data = parseCSV(csvData);
                 
                 // Seleccionar columnas C-H (índices 2-7)
-                allData = data.map(row => row.slice(2, 8));
+                allData = data.map(row => row.slice(3, 7));
                 filteredData = [...allData];
                 
                 renderTable();
@@ -322,7 +322,7 @@
             let html = '<table>';
             
             // Encabezados (primera fila o predeterminados)
-            const headers = filteredData[0] || ['Columna C', 'Columna D', 'Columna E', 'Columna F', 'Columna G', 'Columna H'];
+            const headers = filteredData[0] || ['Columna D', 'Columna E', 'Columna F', 'Columna G', 'Columna H'];
             
             html += '<thead><tr>';
             headers.forEach(header => {
