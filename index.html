@@ -287,16 +287,16 @@
         const SHEET_NAME = 'Base';
         const RANGE = 'D1:L1000'; // Ajusta según tus necesidades
         
-        // Columnas a mostrar (B-H, J, L) - A=0, B=1, ..., L=11
+        // Columnas a mostrar (D-H, J, L) - A=0, B=1, ..., L=11
         const columnsToShow = [3, 4, 5, 6, 7, 9, 11];
-        const dateColumns = []; // Índices de columnas con fechas (basado en columnsToShow)
+        const dateColumns = [5,6,11]; // Índices de columnas con fechas (basado en columnsToShow)
         
         // Variables de estado
         let allData = [];
         let filteredData = [];
         let headers = [];
         let currentPage = 1;
-        const rowsPerPage = 15;
+        const rowsPerPage = 25;
 
         // Cargar datos cuando la página esté lista
         document.addEventListener('DOMContentLoaded', function() {
@@ -585,7 +585,7 @@
             const link = document.createElement('a');
             
             link.setAttribute('href', url);
-            link.setAttribute('download', 'visaciones.csv');
+            link.setAttribute('download', 'bloqueos.csv');
             link.style.visibility = 'hidden';
             
             document.body.appendChild(link);
