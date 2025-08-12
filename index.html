@@ -296,7 +296,7 @@
         let filteredData = [];
         let headers = [];
         let currentPage = 1;
-        const rowsPerPage = 25;
+        const rowsPerPage = 35;
 
         // Cargar datos cuando la página esté lista
         document.addEventListener('DOMContentLoaded', function() {
@@ -378,12 +378,12 @@
                     if (!cellValue) return '';
                     
                     // Formatear fechas si es necesario
-                    if (dateColumns.includes(idx) && cellValue) {
-                        const date = new Date(cellValue);
-                        if (!isNaN(date)) {
-                            return formatDate(date);
-                        }
-                    }
+                    //if (dateColumns.includes(idx) && cellValue) {
+                      //  const date = new Date(cellValue);
+                      //  if (!isNaN(date)) {
+                        //    return formatDate(date);
+                      //  }
+                   // }
                     
                     return cellValue !== undefined ? cellValue : '';
                 });
