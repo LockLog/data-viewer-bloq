@@ -288,7 +288,7 @@
         const RANGE = 'D1:L1000'; // Ajusta según tus necesidades
         
         // Columnas a mostrar (D-H, J, L) - A=0, B=1, ..., L=11
-        const columnsToShow = [3, 4, 5, 6, 7, 9];
+        const columnsToShow = [3, 4, 5, 6, 7];
         const dateColumns = [5,6]; // Índices de columnas con fechas (basado en columnsToShow)
         
         // Variables de estado
@@ -378,12 +378,12 @@
                     if (!cellValue) return '';
                     
                     // Formatear fechas si es necesario
-                    //if (dateColumns.includes(idx) && cellValue) {
-                      //  const date = new Date(cellValue);
-                      //  if (!isNaN(date)) {
-                        //    return formatDate(date);
-                      //  }
-                   // }
+                    if (dateColumns.includes(idx) && cellValue) {
+                        const date = new Date(cellValue);
+                        if (!isNaN(date)) {
+                            return formatDate(date);
+                        }
+                    }
                     
                     return cellValue !== undefined ? cellValue : '';
                 });
@@ -404,7 +404,7 @@
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const year = String(date.getFullYear()).slice(-2);
-            return `${month}-${day}-${year}`;
+            return `${year}-${month}-${day}`;
         }
 
         // Renderizar la tabla
